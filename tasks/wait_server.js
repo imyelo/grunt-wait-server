@@ -8,43 +8,51 @@
 
 'use strict';
 
+var request = require('request');
+
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
-
-  grunt.registerMultiTask('wait_server', 'make grunt wait for server start', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
+  grunt.registerMultiTask('wait_server', 'wait for server start', function() {
     var options = this.options({
-      punctuation: '.',
-      separator: ', '
+      url: '',
+      fail: function () {},
+      timeout: 10 * 1000,
+      isforce: false
     });
-
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
-    });
+    var done = this.async();
+    var flag = {
+      trigger: false
+    };
+    var doneTrigger = function () {
+      if (!flag.trigger) {
+        flag.trigger = true;
+        done();
+      }
+    };
+    var wait = function (done) {
+      var doRequest = function () {
+        console.log('waiting for the server ...');
+        request(options.url, function (err, resp, body) {
+          if (!err) {
+            console.log('server is ready.');
+            done();
+          } else {
+            doRequest();
+          }
+        });
+      };
+      doRequest();
+    };
+    grunt.log.writeln('waiting for server start');
+    wait(doneTrigger);
+    setTimeout(function () {
+      if (!flag.trigger) {
+        flag.trigger = true;
+        grunt.log.warn('timeout.');
+        options.fail();
+        done(options.isforce);
+      }
+    }, options.timeout);
   });
 
 };

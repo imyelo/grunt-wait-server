@@ -26,10 +26,18 @@ In your project's Gruntfile, add a section named `wait_server` to the data objec
 grunt.initConfig({
   wait_server: {
     options: {
-      // Task-specific options go here.
+      url: 'http://localhost:8080',
+      fail: function () {},
+      timeout: 10 * 1000,
+      isforce: false
     },
-    your_target: {
-      // Target-specific file lists and/or options go here.
+    server: {
+      options: {
+        url: 'http://localhost:8080',
+        fail: function () {},
+        timeout: 10 * 1000,
+        isforce: false
+      },
     },
   },
 });
@@ -37,47 +45,65 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.url  
+Type: `string`  
+Default value: `''`  
 
-A string value that is used to do something with whatever.
+this options is required.  
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
 
-A string value that is used to do something else with whatever else.
+#### options.fail  
+Type: `function`  
+Default value: `function () {}`  
 
-### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+#### options.timeout  
+Type: `number`  
+Default value: `10 * 1000`  
+
+
+#### options.isforce  
+Type: `boolean`  
+Default value: `false`  
+
+When `options.isforce` is true, 
+the task will continue after `options.timeout`, 
+even if the `done` signal in `options.wait` never came.  
+
+### Usage Examples  
+
+#### Default Options  
+In this example, the `wait_server` task will wait for the server start with the least options.  
 
 ```js
+var request = require('request');
 grunt.initConfig({
   wait_server: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+    server: {
+      options: {
+        url: 'http://localhost:8080'
+      }
     },
   },
 });
 ```
 
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Custom Options  
 
 ```js
+var request = require('request');
 grunt.initConfig({
   wait_server: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    server: {
+      options: {
+        url: 'http://localhost:8080',
+        fail: function () {
+          console.error('the server had not start'); 
+        },
+        timeout: 20 * 1000,
+        isforce: true
+      }
+    }
   },
 });
 ```

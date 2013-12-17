@@ -2,6 +2,9 @@
 
 > make grunt wait for server start
 
+[![NPM version](https://badge.fury.io/js/grunt-wait-server.png)](http://badge.fury.io/js/grunt-wait-server)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
 

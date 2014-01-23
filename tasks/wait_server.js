@@ -17,7 +17,9 @@ module.exports = function(grunt) {
       url: '',
       fail: function () {},
       timeout: 10 * 1000,
-      isforce: false
+      isforce: false,
+      interval: 800,
+      print: true
     });
     var done = this.async();
     var flag = {
@@ -31,13 +33,15 @@ module.exports = function(grunt) {
     };
     var wait = function (done) {
       var doRequest = function () {
-        console.log('waiting for the server ...');
+        if (options.print) {
+          console.log('waiting for the server ...');
+        }
         request(options.url, function (err, resp, body) {
           if (!err) {
             console.log('server is ready.');
             done();
           } else {
-            doRequest();
+            setTimeout(doRequest, options.interval);
           }
         });
       };

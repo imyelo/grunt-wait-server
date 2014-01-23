@@ -32,14 +32,18 @@ grunt.initConfig({
       url: 'http://localhost:8080',
       fail: function () {},
       timeout: 10 * 1000,
-      isforce: false
+      isforce: false,
+      interval: 800,
+      print: true
     },
     server: {
       options: {
         url: 'http://localhost:8080',
         fail: function () {},
         timeout: 10 * 1000,
-        isforce: false
+        isforce: false,
+        interval: 800,
+        print: true
       },
     },
   },
@@ -68,6 +72,17 @@ Default value: `10 * 1000`
 #### options.isforce  
 Type: `boolean`  
 Default value: `false`  
+
+
+#### options.interval  
+Type: `number`  
+Default value: `800`  
+
+
+#### options.print  
+Type: `boolean`  
+Default value: `true` 
+
 
 When `options.isforce` is true, 
 the task will continue after `options.timeout`, 
@@ -104,7 +119,9 @@ grunt.initConfig({
           console.error('the server had not start'); 
         },
         timeout: 20 * 1000,
-        isforce: true
+        isforce: true,
+        interval: 200,
+        print: false
       }
     }
   },

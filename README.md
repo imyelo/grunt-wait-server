@@ -20,14 +20,14 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-wait-server');
 ```
 
-## The "wait_server" task
+## The "waitServer" task
 
 ### Overview
-In your project's Gruntfile, add a section named `wait_server` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `waitServer` or `wait-server` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  wait_server: {
+  waitServer: {
     options: {
       url: 'http://localhost:8080',
       fail: function () {},
@@ -91,12 +91,12 @@ even if the `done` signal in `options.wait` never came.
 ### Usage Examples  
 
 #### Default Options  
-In this example, the `wait_server` task will wait for the server start with the least options.  
+In this example, the `waitServer` task will wait for the server start with the least options.  
 
 ```js
 var request = require('request');
 grunt.initConfig({
-  wait_server: {
+  waitServer: {
     server: {
       options: {
         url: 'http://localhost:8080'
@@ -111,7 +111,7 @@ grunt.initConfig({
 ```js
 var request = require('request');
 grunt.initConfig({
-  wait_server: {
+  waitServer: {
     server: {
       options: {
         url: 'http://localhost:8080',

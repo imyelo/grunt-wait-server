@@ -12,7 +12,7 @@ var request = require('request');
 
 module.exports = function(grunt) {
 
-  grunt.registerMultiTask('wait_server', 'wait for server start', function() {
+  var waitServer = function() {
     var options = this.options({
       url: '',
       fail: function () {},
@@ -57,6 +57,9 @@ module.exports = function(grunt) {
         done(options.isforce);
       }
     }, options.timeout);
-  });
+  };
+
+  grunt.registerMultiTask('wait_server', 'wait for server start', waitServer);
+  grunt.registerMultiTask('waitServer', 'wait for server start', waitServer);
 
 };

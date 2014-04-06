@@ -94,7 +94,6 @@ even if the `done` signal in `options.wait` never came.
 In this example, the `waitServer` task will wait for the server start with the least options.  
 
 ```js
-var request = require('request');
 grunt.initConfig({
   waitServer: {
     server: {
@@ -109,7 +108,6 @@ grunt.initConfig({
 #### Custom Options  
 
 ```js
-var request = require('request');
 grunt.initConfig({
   waitServer: {
     server: {

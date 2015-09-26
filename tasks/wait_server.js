@@ -25,9 +25,14 @@ module.exports = function(grunt) {
     var flag = {
       trigger: false
     };
-    var doneTrigger = function () {
+    var doneTrigger = function (timeout) {
       if (!flag.trigger) {
         flag.trigger = true;
+        if (timeout) {
+          grunt.log.warn('timeout.');
+          options.fail();
+          return done(options.isforce);
+        }
         done();
       }
     };
@@ -50,12 +55,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('waiting for server start');
     wait(doneTrigger);
     setTimeout(function () {
-      if (!flag.trigger) {
-        flag.trigger = true;
-        grunt.log.warn('timeout.');
-        options.fail();
-        done(options.isforce);
-      }
+      doneTrigger(true);
     }, options.timeout);
   };
 

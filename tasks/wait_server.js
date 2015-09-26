@@ -22,6 +22,10 @@ module.exports = function (grunt) {
       interval: 800,
       print: true
     });
+    // check options.url for backwards compatibility
+    if (!options.req && options.url) {
+      options.req = options.url;
+    }
 
     if (!options.req && !options.net) {
       grunt.fail.fatal('The ' + taskName + ' task requires the req or net option' +

@@ -36,20 +36,32 @@ grunt.initConfig({
       interval: 800,
       print: true
     },
+
     server: {
       options: {
         req: {
           url: 'http://localhost:8080',
           method: 'HEAD'
-        },
-        fail: function () {},
-        timeout: 10 * 1000,
-        isforce: false,
-        interval: 800,
-        print: true
-      },
+        }
+      }
     },
-  },
+
+    remoteServer: {
+      options: {
+        req: 'http://example.com',
+        print: false
+      }
+    },
+
+    db: {
+      options: {
+        net: {
+          port: 3306
+        },
+        timeout: 0
+      }
+    }
+  }
 });
 ```
 
@@ -66,7 +78,7 @@ Default value: `undefined`
 See [net.connect#options](https://nodejs.org/api/net.html#net_net_connect_options_connectlistener) for available options.
 
 
-**You must supply either `options.req` or `options.net`.**
+##### You must supply either `options.req` or `options.net`.
 
 
 #### options.fail  
@@ -77,7 +89,7 @@ Default value: `function () {}`
 #### options.timeout  
 Type: `number`  
 Default value: `10 * 1000`  
-*`0` disables the timeout, will wait forever.*
+`0` disables the timeout, will wait forever.
 
 
 #### options.isforce  

@@ -14,13 +14,17 @@ module.exports = function(grunt) {
 
   var waitServer = function() {
     var options = this.options({
-      url: '',
       fail: function () {},
       timeout: 10 * 1000,
       isforce: false,
       interval: 800,
       print: true
     });
+
+    if (!options.req) {
+      grunt.fail.fatal('The waitServer task requires the req option\nSee: https://github.com/imyelo/grunt-wait-server#options');
+    }
+
     var done = this.async();
     var flag = {
       trigger: false
@@ -41,7 +45,7 @@ module.exports = function(grunt) {
         if (options.print) {
           console.log('waiting for the server ...');
         }
-        request(options.url, function (err, resp, body) {
+        request(options.req, function (err, resp, body) {
           if (!err) {
             console.log('server is ready.');
             done();

@@ -29,7 +29,7 @@ In your project's Gruntfile, add a section named `waitServer` or `wait-server` t
 grunt.initConfig({
   waitServer: {
     options: {
-      url: 'http://localhost:8080',
+      req: 'http://localhost:8080',
       fail: function () {},
       timeout: 10 * 1000,
       isforce: false,
@@ -38,7 +38,10 @@ grunt.initConfig({
     },
     server: {
       options: {
-        url: 'http://localhost:8080',
+        req: {
+          url: 'http://localhost:8080',
+          method: 'HEAD'
+        },
         fail: function () {},
         timeout: 10 * 1000,
         isforce: false,
@@ -52,11 +55,12 @@ grunt.initConfig({
 
 ### Options
 
-#### options.url  
-Type: `string`  
-Default value: `''`  
+#### options.req
+Type: `string` or an options `object`  
+Default value: `undefined`  
+See [request#options](https://github.com/request/request#requestoptions-callback) for available options.
 
-this options is required.  
+This options is required.
 
 
 #### options.fail  
@@ -98,7 +102,7 @@ grunt.initConfig({
   waitServer: {
     server: {
       options: {
-        url: 'http://localhost:8080'
+        req: 'http://localhost:8080'
       }
     },
   },
@@ -112,7 +116,7 @@ grunt.initConfig({
   waitServer: {
     server: {
       options: {
-        url: 'http://localhost:8080',
+        req: 'http://localhost:8080',
         fail: function () {
           console.error('the server had not start'); 
         },

@@ -77,6 +77,7 @@ Default value: `function () {}`
 #### options.timeout  
 Type: `number`  
 Default value: `10 * 1000`  
+*`0` disables the timeout, will wait forever.*
 
 
 #### options.isforce  

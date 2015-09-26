@@ -60,7 +60,13 @@ Type: `string` or an options `object`
 Default value: `undefined`  
 See [request#options](https://github.com/request/request#requestoptions-callback) for available options.
 
-This options is required.
+#### options.net
+Type: options `object`  
+Default value: `undefined`  
+See [net.connect#options](https://nodejs.org/api/net.html#net_net_connect_options_connectlistener) for available options.
+
+
+**You must supply either `options.req` or `options.net`.**
 
 
 #### options.fail  

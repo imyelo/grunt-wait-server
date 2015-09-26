@@ -11,9 +11,9 @@
 var net = require('net');
 var request = require('request');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
-  var waitServer = function() {
+  var waitServer = function () {
     var taskName = this.nameArgs;
     var options = this.options({
       fail: function () {},
@@ -57,11 +57,11 @@ module.exports = function(grunt) {
           });
         } else if (options.net) {
           // if options.net use net.connect
-          client = net.connect(options.net, function() {
+          client = net.connect(options.net, function () {
             client.destroy();
             done();
           });
-          client.on('error', function() {
+          client.on('error', function () {
             client.destroy();
             setTimeout(tryConnection, options.interval);
           });
@@ -71,9 +71,9 @@ module.exports = function(grunt) {
       tryConnection();
     };
     wait(doneTrigger);
-    setTimeout(function () {
-      doneTrigger(true);
-    }, options.timeout);
+    if (options.timeout > 0) {
+      setTimeout(doneTrigger.bind(null, true), options.timeout);
+    }
   };
 
   grunt.registerMultiTask('wait_server', 'wait for server start', waitServer);

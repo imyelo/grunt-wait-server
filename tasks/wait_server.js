@@ -8,55 +8,72 @@
 
 'use strict';
 
+var net = require('net');
 var request = require('request');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
-  var waitServer = function() {
+  var waitServer = function () {
+    var taskName = this.nameArgs;
     var options = this.options({
-      url: '',
       fail: function () {},
       timeout: 10 * 1000,
       isforce: false,
       interval: 800,
       print: true
     });
+    // check options.url for backwards compatibility
+    if (!options.req && options.url) {options.req = options.url;}
+
+    if (!options.req && !options.net) {
+      grunt.fail.fatal('The '+ taskName +' task requires the req or net option' +
+        '\nSee: https://github.com/imyelo/grunt-wait-server#options');
+    }
+
+    var trigger, client;
     var done = this.async();
-    var flag = {
-      trigger: false
-    };
-    var doneTrigger = function () {
-      if (!flag.trigger) {
-        flag.trigger = true;
+    var doneTrigger = function (timeout) {
+      if (!trigger) {
+        trigger = true;
+        if (timeout) {
+          grunt.log.warn('timeout.');
+          options.fail();
+          return done(options.isforce);
+        }
+        grunt.log.ok(taskName + ' server is ready.');
         done();
       }
     };
     var wait = function (done) {
-      var doRequest = function () {
+      var tryConnection = function () {
         if (options.print) {
-          console.log('waiting for the server ...');
+          grunt.log.writeln(taskName + ' waiting for the server ...');
         }
-        request(options.url, function (err, resp, body) {
-          if (!err) {
-            console.log('server is ready.');
+        if (options.req) {
+          // if options.req use request
+          request(options.req, function (err, resp, body) {
+            if (!err) { return done(); }
+            setTimeout(tryConnection, options.interval);
+          });
+        } else if (options.net) {
+          // if options.net use net.connect
+          client = net.connect(options.net, function () {
+            client.destroy();
             done();
-          } else {
-            setTimeout(doRequest, options.interval);
-          }
-        });
+          });
+          client.on('error', function () {
+            client.destroy();
+            setTimeout(tryConnection, options.interval);
+          });
+        }
       };
-      doRequest();
+
+      tryConnection();
     };
-    grunt.log.writeln('waiting for server start');
     wait(doneTrigger);
-    setTimeout(function () {
-      if (!flag.trigger) {
-        flag.trigger = true;
-        grunt.log.warn('timeout.');
-        options.fail();
-        done(options.isforce);
-      }
-    }, options.timeout);
+    if (options.timeout > 0) {
+      setTimeout(doneTrigger.bind(null, true), options.timeout);
+    }
   };
 
   grunt.registerMultiTask('wait_server', 'wait for server start', waitServer);

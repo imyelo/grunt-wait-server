@@ -29,34 +29,56 @@ In your project's Gruntfile, add a section named `waitServer` or `wait-server` t
 grunt.initConfig({
   waitServer: {
     options: {
-      url: 'http://localhost:8080',
+      req: 'http://localhost:8080',
       fail: function () {},
       timeout: 10 * 1000,
       isforce: false,
       interval: 800,
       print: true
     },
+
     server: {
       options: {
-        url: 'http://localhost:8080',
-        fail: function () {},
-        timeout: 10 * 1000,
-        isforce: false,
-        interval: 800,
-        print: true
-      },
+        req: {
+          url: 'http://localhost:8080',
+          method: 'HEAD'
+        }
+      }
     },
-  },
+
+    remoteServer: {
+      options: {
+        req: 'http://example.com',
+        print: false
+      }
+    },
+
+    db: {
+      options: {
+        net: {
+          port: 3306
+        },
+        timeout: 0
+      }
+    }
+  }
 });
 ```
 
 ### Options
 
-#### options.url  
-Type: `string`  
-Default value: `''`  
+#### options.req
+Type: `string` or an options `object`  
+Default value: `undefined`  
+See [request#options](https://github.com/request/request#requestoptions-callback) for available options.
 
-this options is required.  
+#### options.net
+Type: options `object`  
+Default value: `undefined`  
+See [net.connect#options](https://nodejs.org/api/net.html#net_net_connect_options_connectlistener) for available options.
+
+
+##### You must supply either `options.req` or `options.net`.
 
 
 #### options.fail  
@@ -67,6 +89,7 @@ Default value: `function () {}`
 #### options.timeout  
 Type: `number`  
 Default value: `10 * 1000`  
+`0` disables the timeout, will wait forever.
 
 
 #### options.isforce  
@@ -98,7 +121,7 @@ grunt.initConfig({
   waitServer: {
     server: {
       options: {
-        url: 'http://localhost:8080'
+        req: 'http://localhost:8080'
       }
     },
   },
@@ -112,7 +135,7 @@ grunt.initConfig({
   waitServer: {
     server: {
       options: {
-        url: 'http://localhost:8080',
+        req: 'http://localhost:8080',
         fail: function () {
           console.error('the server had not start'); 
         },

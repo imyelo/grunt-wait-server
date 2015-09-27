@@ -1,7 +1,7 @@
 {
   "name": "grunt-wait-server",
   "description": "make grunt wait for server start",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "https://github.com/imyelo/grunt-wait-server",
   "author": {
     "name": "yelo",

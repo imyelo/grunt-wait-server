@@ -10,6 +10,7 @@
 
 var net = require('net');
 var request = require('request');
+var once = require('once');
 
 module.exports = function (grunt) {
 
@@ -22,6 +23,7 @@ module.exports = function (grunt) {
       interval: 800,
       print: true
     });
+
     // check options.url for backwards compatibility
     if (!options.req && options.url) {
       options.req = options.url;
@@ -32,21 +34,18 @@ module.exports = function (grunt) {
         '\nSee: https://github.com/imyelo/grunt-wait-server#options');
     }
 
-    var trigger, client;
+    var client;
     var done = this.async();
-    var doneTrigger = function (timeout) {
-      if (!trigger) {
-        trigger = true;
-        if (timeout) {
-          grunt.log.warn('timeout.');
-          options.fail();
-          return done(options.isforce);
-        }
-        grunt.log.ok(taskName + ' server is ready.');
-        done();
+    var callback = once(function (isTimeout) {
+      if (isTimeout) {
+        grunt.log.warn('timeout.');
+        options.fail();
+        return done(options.isforce);
       }
-    };
-    var wait = function (done) {
+      grunt.log.ok(taskName + ' server is ready.');
+      done();
+    });
+    var wait = function (callback) {
       var tryConnection = function () {
         if (options.print) {
           grunt.log.writeln(taskName + ' waiting for the server ...');
@@ -55,7 +54,7 @@ module.exports = function (grunt) {
           // if options.req use request
           request(options.req, function (err, resp, body) {
             if (!err) {
-              return done();
+              return callback();
             }
             setTimeout(tryConnection, options.interval);
           });
@@ -63,7 +62,7 @@ module.exports = function (grunt) {
           // if options.net use net.connect
           client = net.connect(options.net, function () {
             client.destroy();
-            done();
+            callback();
           });
           client.on('error', function () {
             client.destroy();
@@ -74,9 +73,9 @@ module.exports = function (grunt) {
 
       tryConnection();
     };
-    wait(doneTrigger);
+    wait(callback);
     if (options.timeout > 0) {
-      setTimeout(doneTrigger.bind(null, true), options.timeout);
+      setTimeout(callback.bind(null, true), options.timeout);
     }
   };
 
